@@ -336,7 +336,7 @@
                     <span class="pill">{item.permissions.length} permissions</span>
                     <span class="pill">{item.events.length} events</span>
                     {#if session.codes?.[item.key]?.code}
-                      <span class="pill pill-success">Code captured</span>
+                      <span class="pill pill-success">Creation initiated</span>
                     {:else}
                       <span class="pill pill-warning">Pending</span>
                     {/if}
@@ -346,8 +346,13 @@
                 <div class="manifest-controls">
                   <form action={`${actionUrl}?state=${encodeURIComponent(manifestState(item))}`} method="post" target="_blank">
                     <input type="hidden" name="manifest" value={JSON.stringify(item.manifest)} />
-                    <button class="button" type="submit">Create on GitHub</button>
+                    <button class="button" type="submit" disabled={Boolean(session.codes?.[item.key]?.code)}>
+                      Create on GitHub
+                    </button>
                   </form>
+                  {#if session.codes?.[item.key]?.code}
+                    <span class="subtle small">Creation initiated</span>
+                  {/if}
                   <span class="subtle small">{permissionSummary(item)}</span>
                 </div>
               </div>
@@ -508,8 +513,8 @@
       <article class="status-card">
         <div class="progress-row">
           <div class="section-header">
-            <h2>Collected codes</h2>
-            <p>{stats.completed} of {stats.total} manifest callbacks completed.</p>
+            <h2>Progress</h2>
+            <p>{stats.completed} of {stats.total} apps are being created.</p>
           </div>
           {#if stats.done}
             <span class="pill pill-success">Ready to copy</span>
@@ -522,9 +527,15 @@
           <span style={`width: ${stats.total ? (stats.completed / stats.total) * 100 : 0}%`}></span>
         </div>
 
+        <div class="note small">
+          The apps will not be visible in the GitHub UI until the creation process is finalized locally.
+          Copy the confirmation JSON when it becomes available, then follow the original instructions to
+          complete the flow.
+        </div>
+
         <div class="actions">
           <button class="button" type="button" disabled={!stats.done} on:click={copyResult}>
-            Copy app-id to code JSON
+            Copy confirmation JSON
           </button>
           <button class="button-secondary" type="button" on:click={syncSession}>Refresh session</button>
         </div>
