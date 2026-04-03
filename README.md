@@ -17,6 +17,15 @@ npm run build
 
 The static site is emitted to `build/`.
 
+To build with a GitHub Pages project-site base path locally:
+
+```bash
+BASE_PATH=/flow npm run build
+```
+
+The GitHub Actions deployment workflow builds with `BASE_PATH=/flow` for deployment to
+`https://octoform.github.io/flow`.
+
 ## Query Parameters
 
 - `owner`: GitHub owner name
